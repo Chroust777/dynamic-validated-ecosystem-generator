@@ -985,12 +985,52 @@ function compatibilityText(loc,state){
   return "Current ecosystem switches do not conflict with a mandatory named card; full feasibility is checked when generating.";
 }
 function stateFromUI(){const enabled={};document.querySelectorAll(".eco-select").forEach(el=>enabled[el.dataset.eco]=el.value==="YES");return {locationName:document.getElementById("locationSelect").value,startingTerrain:document.getElementById("terrainSelect").value,profile:document.getElementById("profileSelect").value,hideCards:document.getElementById("hideCardsCheckbox").checked,enabled};}
-function renderLocationInfo(){const state=stateFromUI(),loc=locationByName.get(state.locationName);if(!loc)return;document.getElementById("pathAssembly").textContent=loc.assembly||"—";document.getElementById("arrivalSetup").textContent=loc.arrival||"—";document.getElementById("requiredCard").textContent=loc.requiredText||"—";document.getElementById("setupDiscard").textContent=loc.discardText||"—";document.getElementById("specialNote").textContent=loc.notes||"—";const comp=document.getElementById("compatibility");comp.textContent=compatibilityText(loc,state);comp.classList.toggle("bad",comp.textContent.startsWith("INCOMPATIBLE"));}
+function renderLocationInfo(){const state=stateFromUI(),loc=locationByName.get(state.locationName);if(!loc)return;document.getElementById("pathAssembly").textContent=loc.assembly||"—";document.getElementById("arrivalSetup").textContent=loc.arrival||"—";document.getElementById("requiredCard").textContent=loc.requiredText||"—";document.getElementById("setupDiscard").textContent=loc.discardText||"—";document.getElementById("specialNote").textContent=loc.notes||"—";const comp=document.getElementById("compatibility");comp.textContent=compatibilityText(loc,state);const isBad=comp.textContent.startsWith("INCOMPATIBLE");comp.classList.toggle("bad",isBad);comp.classList.toggle("good",!isBad);}
+
+function adjustWhyColumnWidth(){
+  const wrap=document.querySelector(".deck-table-wrap");
+  const table=document.querySelector(".deck-table");
+  if(!wrap||!table)return;
+
+  const cells=[table.querySelector("th:nth-child(7)"),...table.querySelectorAll("#deckBody td:nth-child(7)")].filter(Boolean);
+  if(!cells.length)return;
+
+  const probe=document.createElement("span");
+  probe.style.position="absolute";
+  probe.style.left="-100000px";
+  probe.style.top="-100000px";
+  probe.style.visibility="hidden";
+  probe.style.whiteSpace="nowrap";
+  probe.style.pointerEvents="none";
+  document.body.appendChild(probe);
+
+  let widest=0;
+  for(const cell of cells){
+    const cs=getComputedStyle(cell);
+    probe.style.fontFamily=cs.fontFamily;
+    probe.style.fontSize=cs.fontSize;
+    probe.style.fontWeight=cs.fontWeight;
+    probe.style.fontStyle=cs.fontStyle;
+    probe.style.letterSpacing=cs.letterSpacing;
+    probe.textContent=cell.textContent||"";
+    widest=Math.max(widest,probe.getBoundingClientRect().width);
+  }
+  probe.remove();
+
+  // 12 px gives breathing room for cell padding/borders. Keep a sensible minimum
+  // for short explanations; there is intentionally no maximum because the
+  // horizontal scrollbar is the fallback on smaller monitors.
+  const desired=Math.max(360,Math.ceil(widest+12));
+  table.style.setProperty("--why-width",`${desired}px`);
+  wrap.style.setProperty("--why-width",`${desired}px`);
+}
+
 function renderDeck(deck){
   if(!deck?.length)return;const st=buildStats(deck),loc=locationByName.get(document.getElementById("locationSelect").value)||locations[0],body=document.getElementById("deckBody");body.innerHTML="";
   deck.forEach((idx,i)=>{const c=cards[idx],tr=document.createElement("tr");const vals=[i+1,c.numberInSet,c.name,c.ecosystem,c.cardType,c.traits,whyCardFits(idx,st,loc)];vals.forEach((v,j)=>{const td=document.createElement("td");td.textContent=v;if(j===0||j===1)td.className="center";tr.appendChild(td);});body.appendChild(tr);});
   const ecoNumbers=new Map();for(const idx of deck){const c=cards[idx];if(!ecoNumbers.has(c.ecosystem))ecoNumbers.set(c.ecosystem,[]);ecoNumbers.get(c.ecosystem).push(parseInt(c.numberInSet,10));}
   const sb=document.getElementById("spoilerBody");sb.innerHTML="";for(const eco of ECO_NAMES.slice(1)){if(!ecoNumbers.has(eco))continue;const tr=document.createElement("tr"),a=document.createElement("td"),b=document.createElement("td");a.textContent=eco;b.textContent=ecoNumbers.get(eco).sort((x,y)=>x-y).join(", ");tr.append(a,b);sb.appendChild(tr);}
+  adjustWhyColumnWidth();
   toggleSpoiler();
 }
 function toggleSpoiler(){const hide=document.getElementById("hideCardsCheckbox")?.checked;document.getElementById("spoilerCover")?.classList.toggle("visible",!!hide);}
@@ -1006,5 +1046,8 @@ function initUI(){
   document.getElementById("generateButton").addEventListener("click",async()=>{const btn=document.getElementById("generateButton"),state=stateFromUI();btn.disabled=true;const old=btn.textContent;try{btn.textContent="GENERATING… 0%";const result=await generateDeckCore(state,(n,total)=>btn.textContent=`GENERATING… ${Math.round(100*n/total)}%`);currentDeck=result.deck;renderDeck(currentDeck);btn.textContent="DECK READY";}catch(e){showMessage(e?.message||String(e));btn.textContent="GENERATION FAILED";}finally{setTimeout(()=>{btn.disabled=false;btn.textContent=old;},450);}});
   renderLocationInfo();if(INITIAL_DECK.length===DECK_SIZE){setStateForGeneration(defaultState);renderDeck(INITIAL_DECK);}toggleSpoiler();
 }
-if(typeof document!=="undefined")document.addEventListener("DOMContentLoaded",initUI);
+if(typeof document!=="undefined"){
+  document.addEventListener("DOMContentLoaded",initUI);
+  window.addEventListener("resize",()=>{if(currentDeck?.length)adjustWhyColumnWidth();});
+}
 if(typeof module!=="undefined"&&module.exports)module.exports={generateDeckCore,defaultState,cards,locations,locationByName,buildStats,validateDeck,setStateForGeneration,findPhysicalCard};
