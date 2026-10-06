@@ -363,3 +363,75 @@ select {
   .col-type { width: 90px; }
   .col-traits { width: 210px; }
 }
+
+
+/* === Thin-line normalization ===
+   Keep every visible grid/header separator at exactly 1px.
+   Adjacent cells do not draw overlapping borders. */
+:root {
+  --thin-line: #565656;
+}
+
+/* Section headings: one thin border around the whole heading cell. */
+.gold-heading,
+.green-heading,
+.dark-heading {
+  border: 1px solid var(--thin-line);
+}
+
+/* GENERATOR SETTINGS: one shared 1px line between adjacent cells/rows. */
+.setting-row > .cell-label,
+.setting-row > .wide-select,
+.setting-row > .checkbox-cell {
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--thin-line);
+  border-bottom: 1px solid var(--thin-line);
+}
+.setting-row > :last-child {
+  border-right: 1px solid var(--thin-line);
+}
+
+/* ECOSYSTEM POOL: avoid double borders between name and YES/NO cells. */
+.eco-name,
+.eco-select {
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--thin-line);
+  border-bottom: 1px solid var(--thin-line);
+}
+.eco-select {
+  border-right: 1px solid var(--thin-line);
+}
+.eco-gap {
+  border: 0;
+}
+
+/* SELECTED LOCATION: complete thin outline + single internal lines. */
+.location-label,
+.location-value {
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--thin-line);
+  border-bottom: 1px solid var(--thin-line);
+}
+.location-value {
+  border-right: 1px solid var(--thin-line);
+}
+
+/* Generated-deck header/table: all separators stay thin. */
+.deck-table th {
+  border: 1px solid var(--thin-line);
+  border-top: 0;
+}
+.deck-table td {
+  border: 1px solid var(--thin-line);
+}
+
+/* Other visible outlines kept at one pixel as well. */
+.generate-button {
+  border-width: 1px;
+}
+.spoiler-cover {
+  border-width: 1px;
+}
