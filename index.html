@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Earthborne Rangers — Cross-Ecosystem Path Generator</title>
+  <meta name="description" content="Earthborne Rangers CROSS-12 Dynamic Path Generator v7.9.7 — browser edition.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="excel-page" aria-label="Earthborne Rangers CROSS-12 Dynamic Path Generator">
+    <header class="title-row">EARTHBORNE RANGERS — CROSS-ECOSYSTEM PATH GENERATOR</header>
+    <div class="instruction-row">Choose a location, enable any ecosystems you want to use, choose an optimization profile, then generate one validated 12-card deck.</div>
+
+    <section class="workspace">
+      <div class="left-pane">
+        <section class="settings-panel">
+          <div class="gold-heading">GENERATOR SETTINGS</div>
+          <div class="setting-row">
+            <div class="cell-label">Location</div>
+            <select id="locationSelect" class="wide-select" aria-label="Location"></select>
+          </div>
+          <div class="setting-row">
+            <div class="cell-label">Starting terrain</div>
+            <select id="terrainSelect" class="wide-select gold-text" aria-label="Starting terrain"></select>
+          </div>
+          <div class="setting-row">
+            <div class="cell-label">Optimization profile</div>
+            <select id="profileSelect" class="wide-select gold-text" aria-label="Optimization profile">
+              <option>BALANCED</option>
+              <option>MAX SYNERGY</option>
+              <option>HIGH VARIETY</option>
+            </select>
+          </div>
+          <div class="setting-row checkbox-row">
+            <div class="cell-label">Hidden cards (checkbox)</div>
+            <label class="checkbox-cell"><input id="hideCardsCheckbox" type="checkbox"> <span>Hide 12 generated cards</span></label>
+          </div>
+        </section>
+
+        <section class="ecosystem-panel">
+          <div class="green-heading">ECOSYSTEM POOL — YES = cards may be used</div>
+          <div class="ecosystem-grid">
+            <div class="eco-name">Woods</div><select data-eco="Woods" class="eco-select"><option>YES</option><option>NO</option></select><div class="eco-gap"></div><div class="eco-name">River</div><select data-eco="River" class="eco-select"><option>YES</option><option>NO</option></select>
+            <div class="eco-name">Old-Growth</div><select data-eco="Old-Growth" class="eco-select"><option>YES</option><option>NO</option></select><div class="eco-gap"></div><div class="eco-name">Swamp</div><select data-eco="Swamp" class="eco-select"><option>YES</option><option>NO</option></select>
+            <div class="eco-name">Mountain Pass</div><select data-eco="Mountain Pass" class="eco-select"><option>YES</option><option>NO</option></select><div class="eco-gap"></div><div class="eco-name">Grassland</div><select data-eco="Grassland" class="eco-select"><option>YES</option><option>NO</option></select>
+            <div class="eco-name">Ravine</div><select data-eco="Ravine" class="eco-select"><option>YES</option><option>NO</option></select><div class="eco-gap"></div><div class="eco-name">Lakeshore</div><select data-eco="Lakeshore" class="eco-select"><option>YES</option><option>NO</option></select>
+          </div>
+        </section>
+
+        <button id="generateButton" class="generate-button" type="button">GENERATE DECK</button>
+
+        <section class="location-panel">
+          <div class="dark-heading">SELECTED LOCATION — SETUP &amp; SPECIAL RULES</div>
+          <div class="location-row"><div class="location-label">Path Deck Assembly</div><div id="pathAssembly" class="location-value"></div></div>
+          <div class="location-row tall"><div class="location-label">Arrival Setup</div><div id="arrivalSetup" class="location-value"></div></div>
+          <div class="location-row"><div class="location-label">Required card</div><div id="requiredCard" class="location-value"></div></div>
+          <div class="location-row"><div class="location-label">Setup discard</div><div id="setupDiscard" class="location-value"></div></div>
+          <div class="location-row note"><div class="location-label">Special note</div><div id="specialNote" class="location-value"></div></div>
+          <div class="location-row compatibility"><div class="location-label">Compatibility</div><div id="compatibility" class="location-value"></div></div>
+        </section>
+      </div>
+
+      <div class="sheet-gap" aria-hidden="true"></div>
+
+      <div class="right-pane">
+        <section class="deck-panel">
+          <div class="gold-heading deck-title">GENERATED PATH DECK — 12 CARDS</div>
+          <div class="deck-table-wrap">
+            <table class="deck-table" aria-label="Generated Path Deck">
+              <colgroup>
+                <col class="col-num"><col class="col-set"><col class="col-card"><col class="col-eco"><col class="col-type"><col class="col-traits"><col class="col-why">
+              </colgroup>
+              <thead>
+                <tr><th>#</th><th>No. in Set</th><th>Card</th><th>Ecosystem</th><th>Type</th><th>Traits / Keywords</th><th>Why it fits</th></tr>
+              </thead>
+              <tbody id="deckBody"></tbody>
+            </table>
+            <div id="spoilerCover" class="spoiler-cover" aria-hidden="true">
+              <div>PATH CARDS HIDDEN</div>
+              <div>Use the set numbers in the table below.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="spoiler-panel">
+          <table class="spoiler-table" aria-label="Spoiler-free set numbers">
+            <colgroup><col class="spoiler-eco"><col class="spoiler-nos"></colgroup>
+            <thead><tr><th>Ecosystem</th><th>No. in Set</th></tr></thead>
+            <tbody id="spoilerBody"></tbody>
+          </table>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="messageBox" class="message-box" role="alert" aria-live="assertive" hidden>
+    <div class="message-card">
+      <div class="message-title">Earthborne Rangers Generator</div>
+      <div id="messageText" class="message-text"></div>
+      <button id="messageClose" type="button">OK</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
