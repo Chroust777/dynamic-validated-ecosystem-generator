@@ -150,7 +150,7 @@ select {
 .ecosystem-panel { margin-top: 25px; }
 .ecosystem-grid {
   display: grid;
-  grid-template-columns: 163px 42px 10px 148px 79px;
+  grid-template-columns: 163px 53px 10px 163px 53px;
   grid-template-rows: repeat(4, 25px);
 }
 .eco-name, .eco-select {
