@@ -30,11 +30,7 @@ body {
   width: 100%;
   min-height: 100vh;
   padding: 18px 36px 28px;
-  background-color: #fff;
-  background-image:
-    linear-gradient(to right, var(--excel-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--excel-grid) 1px, transparent 1px);
-  background-size: 82px 20px;
+  background: #fff;
 }
 
 .title-row {
