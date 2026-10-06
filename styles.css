@@ -435,3 +435,14 @@ select {
 .spoiler-cover {
   border-width: 1px;
 }
+
+
+/* === VBA compatibility warning colours ===
+   Matches the final Excel/VBA conditional formatting:
+   fill RGB(252,232,230) / #FCE8E6
+   font RGB(166,27,27) / #A61B1B */
+.location-value.bad {
+  background: #FCE8E6;
+  color: #A61B1B;
+  font-weight: 700;
+}
